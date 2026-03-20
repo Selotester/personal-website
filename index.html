@@ -47,7 +47,7 @@ body {
 /* ─── SCROLLBAR ─── */
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:var(--bg-soft); }
-::-webkit-scrollbar-thumb { background:var(--accent); border-radius:99px; }
+::-webkit-scrollbar-thumb { background:var(--text-light); border-radius:99px; }
 
 /* ─── NAV ─── */
 nav {
@@ -159,6 +159,20 @@ nav.scrolled {
 .btn-ghost-inv:hover { background:rgba(255,255,255,0.18); border-color:rgba(255,255,255,0.4); }
 
 /* ─── HERO ─── */
+.hero-wrapper {
+  position:relative;
+  overflow:hidden;
+  background:var(--bg);
+}
+.hero-wrapper::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(15,118,110,0.1) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  pointer-events:none;
+  mask-image: radial-gradient(ellipse 80% 80% at 60% 50%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 60% 50%, black 40%, transparent 100%);
+}
 #home {
   min-height:100vh;
   padding:120px 6% 80px;
@@ -166,6 +180,7 @@ nav.scrolled {
   grid-template-columns:1fr 420px;
   gap:5rem; align-items:center;
   max-width:1240px; margin:0 auto;
+  position:relative; z-index:1;
 }
 .hero-tag {
   display:inline-flex; align-items:center; gap:0.5rem;
@@ -210,7 +225,7 @@ nav.scrolled {
   padding:0.32rem 0.9rem; border-radius:99px;
   transition:all 0.2s; cursor:default;
 }
-.pill:hover { background:var(--accent-lite); border-color:var(--accent-mid); color:var(--accent); }
+.pill:hover { background:var(--bg); border-color:var(--text-light); color:var(--text); }
 .hero-location {
   font-size:0.82rem; color:var(--text-light);
   display:flex; align-items:center; gap:0.4rem;
@@ -223,21 +238,35 @@ nav.scrolled {
 .stat:last-child { border-right:none; margin-right:0; padding-right:0; }
 .stat-num {
   font-family:'Fraunces', serif;
-  font-size:2.6rem; font-weight:400;
-  line-height:1; letter-spacing:-0.03em;
+  font-size:3.2rem; font-weight:300;
+  line-height:1; letter-spacing:-0.04em;
   color:var(--text);
 }
-.stat-label { font-size:0.72rem; color:var(--text-muted); font-weight:600; margin-top:0.3rem; line-height:1.4; }
+.stat-label { font-size:0.72rem; color:var(--text-muted); font-weight:600; margin-top:0.4rem; line-height:1.4; text-transform:uppercase; letter-spacing:0.04em; }
 
 /* Photo */
-.hero-photo-wrap { position:relative; }
+.hero-photo-wrap {
+  position:relative;
+  padding:12px 0 0 12px;
+}
+.hero-photo-wrap::before {
+  content:'';
+  position:absolute;
+  top:0; left:0;
+  width:calc(100% - 12px);
+  height:calc(100% - 12px);
+  background:var(--accent);
+  border-radius:30px;
+  opacity:0.18;
+  z-index:0;
+}
 .hero-photo-frame { display:none; }
 .hero-photo {
   width:100%; aspect-ratio:4/5;
   object-fit:cover; object-position:top center;
-  border-radius:28px;
+  border-radius:24px;
   position:relative; z-index:1; display:block;
-  box-shadow:var(--shadow-lg);
+  box-shadow: 0 20px 60px rgba(15,23,42,0.18), 0 4px 12px rgba(15,23,42,0.08);
 }
 
 /* ─── SECTIONS ─── */
@@ -284,8 +313,18 @@ nav.scrolled {
 
 /* ─── ABOUT ─── */
 .about-grid { display:grid; grid-template-columns:1.1fr 0.9fr; gap:5rem; align-items:start; }
-.about-text p { font-size:1rem; line-height:1.9; color:var(--text); margin-bottom:1.4rem; }
+.about-text p { font-size:1rem; line-height:1.95; color:var(--text); margin-bottom:1.4rem; }
 .about-text p:last-child { margin-bottom:0; }
+.about-callout {
+  font-family:'Fraunces', serif;
+  font-size:1.3rem; font-weight:300;
+  line-height:1.6; letter-spacing:-0.01em;
+  color:var(--text);
+  border-left:3px solid var(--accent);
+  padding-left:1.4rem;
+  margin-bottom:1.8rem !important;
+  font-style:italic;
+}
 .about-cards { display:flex; flex-direction:column; gap:1.2rem; }
 .about-card {
   background:var(--bg);
@@ -297,8 +336,8 @@ nav.scrolled {
   cursor:default;
 }
 .about-card:hover {
-  border-color:var(--accent);
-  box-shadow:0 8px 32px rgba(15,118,110,0.1);
+  border-color:var(--text-light);
+  box-shadow:var(--shadow-md);
   transform:translateY(-3px) translateX(3px);
 }
 .about-card-icon { font-size:1.4rem; margin-bottom:0.65rem; display:block; }
@@ -337,25 +376,47 @@ nav.scrolled {
 .spec-list li::before { content:'–'; position:absolute; left:0; color:var(--accent-mid); font-weight:700; }
 
 /* ─── INDUSTRIES ─── */
-.industry-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; }
-.industry-card {
-  background:var(--bg);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:2.2rem 1.4rem; text-align:center;
-  box-shadow:var(--shadow-sm);
-  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+.industry-list {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0;
+  border-top:1px solid var(--border);
+}
+.industry-item {
+  flex:1; min-width:200px;
+  padding:2.4rem 2rem;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  position:relative;
+  transition:background 0.25s;
   cursor:default;
 }
-.industry-card:hover {
-  border-color:var(--accent);
-  background:var(--accent-lite);
-  transform:translateY(-6px) scale(1.02);
-  box-shadow:0 16px 40px rgba(15,118,110,0.15);
+.industry-item:last-child { border-right:none; }
+.industry-item:hover { background:var(--bg-soft); }
+.industry-item:hover .industry-item-name { color:var(--text); }
+.industry-item-number {
+  font-family:'Fraunces', serif;
+  font-size:0.75rem; font-weight:400;
+  color:var(--text-light);
+  margin-bottom:1.4rem;
+  display:block;
 }
-.industry-emoji { font-size:2.2rem; margin-bottom:1rem; display:block; transition:transform 0.3s; }
-.industry-card:hover .industry-emoji { transform:scale(1.2); }
-.industry-name { font-weight:700; font-size:0.875rem; color:var(--text); line-height:1.4; }
+.industry-item-name {
+  font-family:'Fraunces', serif;
+  font-size:1.5rem; font-weight:300;
+  line-height:1.2;
+  letter-spacing:-0.02em;
+  color:var(--text-muted);
+  transition:color 0.25s;
+}
+.industry-item-sub {
+  font-size:0.75rem;
+  color:var(--text-light);
+  font-weight:500;
+  margin-top:0.5rem;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+}
 
 /* ─── TIMELINE ─── */
 .timeline { position:relative; padding-left:1.5rem; }
@@ -391,20 +452,20 @@ nav.scrolled {
 .timeline-period {
   font-size:0.72rem; font-weight:700;
   letter-spacing:0.08em; text-transform:uppercase;
-  color:var(--accent);
-  background:var(--accent-lite);
+  color:var(--text-muted);
+  background:var(--bg-soft);
   padding:0.28rem 0.85rem; border-radius:99px;
-  border:1px solid var(--accent-mid); white-space:nowrap;
+  border:1px solid var(--border); white-space:nowrap;
 }
 .timeline-role { font-weight:700; font-size:1.1rem; margin-bottom:0.2rem; }
-.timeline-company { font-size:0.88rem; color:var(--accent); font-weight:600; margin-bottom:0.2rem; }
+.timeline-company { font-size:0.88rem; color:var(--text-muted); font-weight:600; margin-bottom:0.2rem; }
 .timeline-location { font-size:0.78rem; color:var(--text-light); margin-bottom:1.2rem; }
 .timeline-points { list-style:none; display:flex; flex-direction:column; gap:0.65rem; }
 .timeline-points li {
   font-size:0.875rem; color:var(--text-muted);
   padding-left:1.2rem; position:relative; line-height:1.7;
 }
-.timeline-points li::before { content:'–'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.timeline-points li::before { content:'–'; position:absolute; left:0; color:var(--text-light); font-weight:700; }
 
 /* ─── TOOLS ─── */
 .tools-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
@@ -453,8 +514,8 @@ nav.scrolled {
   transition:border-color 0.25s, box-shadow 0.25s, transform 0.25s;
 }
 .cert-card:hover {
-  border-color:var(--accent);
-  box-shadow:0 8px 32px rgba(15,118,110,0.1);
+  border-color:var(--text-light);
+  box-shadow:var(--shadow-md);
   transform:translateY(-2px);
 }
 .cert-card-header {
@@ -471,7 +532,7 @@ nav.scrolled {
 }
 .cert-list li::before {
   content:'✓'; position:absolute; left:0;
-  color:var(--accent); font-size:0.73rem; font-weight:700; top:2px;
+  color:var(--text-muted); font-size:0.73rem; font-weight:700; top:2px;
 }
 
 /* ─── EDUCATION ─── */
@@ -485,15 +546,15 @@ nav.scrolled {
   box-shadow:var(--shadow-sm);
   transition:border-color 0.25s, transform 0.25s;
 }
-.edu-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+.edu-card:hover { border-color:var(--border); transform:translateY(-2px); }
 .edu-icon {
   width:50px; height:50px;
-  background:var(--accent-lite); border-radius:14px;
+  background:var(--bg-soft); border-radius:14px;
   display:flex; align-items:center; justify-content:center;
   font-size:1.4rem; flex-shrink:0;
 }
 .edu-degree { font-weight:700; font-size:0.95rem; margin-bottom:0.25rem; }
-.edu-school { font-size:0.85rem; color:var(--accent); font-weight:600; margin-bottom:0.2rem; }
+.edu-school { font-size:0.85rem; color:var(--text-muted); font-weight:600; margin-bottom:0.2rem; }
 .edu-years { font-size:0.78rem; color:var(--text-light); }
 .lang-row { display:flex; gap:1rem; flex-wrap:wrap; }
 .lang-chip {
@@ -504,7 +565,7 @@ nav.scrolled {
   box-shadow:var(--shadow-sm);
   transition:border-color 0.2s, transform 0.2s;
 }
-.lang-chip:hover { border-color:var(--accent); transform:translateY(-1px); }
+.lang-chip:hover { border-color:var(--text-light); transform:translateY(-1px); }
 .lang-flag { font-size:1.2rem; }
 .lang-name { font-weight:700; font-size:0.88rem; }
 .lang-level { font-size:0.75rem; color:var(--text-muted); margin-left:0.2rem; }
@@ -610,13 +671,14 @@ footer a:hover { color:#fff; }
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
   #home{grid-template-columns:1fr;text-align:center;gap:3rem;}
-  .hero-photo-wrap{order:-1;max-width:260px;margin:0 auto;}
+  .hero-photo-wrap{order:-1;max-width:260px;margin:0 auto;padding:8px 0 0 8px;}
   .hero-photo-frame{display:none;}
   .hero-location,.hero-btns,.hero-pills{justify-content:center;}
   .hero-stats{justify-content:center;}
   .about-grid,.contact-grid{grid-template-columns:1fr;gap:3rem;}
   .spec-grid{grid-template-columns:1fr;}
-  .industry-grid{grid-template-columns:repeat(2,1fr);}
+  .industry-list{flex-direction:column;}
+  .industry-item{border-right:none;}
   .tools-grid{grid-template-columns:1fr;}
   .certs-grid{grid-template-columns:1fr;}
   .nav-links li:not(:last-child){display:none;}
@@ -650,7 +712,7 @@ footer a:hover { color:#fff; }
   </ul>
 </nav>
 
-<!-- HERO -->
+<div class="hero-wrapper">
 <div style="background:var(--bg)">
 <div id="home">
   <div class="fade-left">
@@ -678,6 +740,10 @@ footer a:hover { color:#fff; }
         <div class="stat-num" data-target="5" data-suffix="+">0</div>
         <div class="stat-label">Brands<br>Managed</div>
       </div>
+      <div class="stat">
+        <div class="stat-num" data-target="4" data-suffix="">0</div>
+        <div class="stat-label">Industries<br>across Career</div>
+      </div>
     </div>
   </div>
   <div class="fade-right" style="transition-delay:0.1s">
@@ -696,6 +762,7 @@ footer a:hover { color:#fff; }
   <h2 class="section-title fade-up">A hands-on CRM professional<br>with a <em>story to tell</em></h2>
   <div class="about-grid">
     <div class="about-text fade-left">
+      <p class="about-callout">I build CRM systems from scratch — not just operate them. That distinction shapes everything I do.</p>
       <p>I am a CRM Manager and Consultant with over a decade of experience in lifecycle marketing, automation and martech strategy. My career has spanned diverse industries — from iGaming to sports blockchain — where I have built and owned CRM systems from the ground up, not just managed them.</p>
       <p>What sets my approach apart is the combination of strategic thinking and technical execution. I work closely with tech, product and operations teams as a key stakeholder, building the automation flows, user journeys and data frameworks that drive results — and leading the teams that bring it all to life.</p>
       <p>My background in Industrial Design taught me to think in systems and user flows — a perspective I bring into every CRM project I work on.</p>
@@ -780,22 +847,26 @@ footer a:hover { color:#fff; }
   <div class="section-eyebrow fade-up">Industry Experience</div>
   <h2 class="section-title fade-up">Sectors I have<br><em>worked in</em></h2>
   <p class="section-lead fade-up">A career built across diverse and fast-moving industries, each with its own audience, dynamics and challenges.</p>
-  <div class="industry-grid">
-    <div class="industry-card scale-in">
-      <span class="industry-emoji">🏟</span>
-      <div class="industry-name">Sports &<br>Entertainment</div>
+  <div class="industry-list">
+    <div class="industry-item scale-in">
+      <span class="industry-item-number">01</span>
+      <div class="industry-item-name">Sports & Fan<br>Engagement</div>
+      <div class="industry-item-sub">Socios.com</div>
     </div>
-    <div class="industry-card scale-in" style="transition-delay:0.08s">
-      <span class="industry-emoji">🎮</span>
-      <div class="industry-name">Gaming</div>
+    <div class="industry-item scale-in" style="transition-delay:0.08s">
+      <span class="industry-item-number">02</span>
+      <div class="industry-item-name">Gaming &<br>Sportsbook</div>
+      <div class="industry-item-sub">LV BET · Betzest</div>
     </div>
-    <div class="industry-card scale-in" style="transition-delay:0.16s">
-      <span class="industry-emoji">⛓</span>
-      <div class="industry-name">Blockchain<br>& Web3</div>
+    <div class="industry-item scale-in" style="transition-delay:0.16s">
+      <span class="industry-item-number">03</span>
+      <div class="industry-item-name">Blockchain<br>& Web3</div>
+      <div class="industry-item-sub">Chiliz Chain · Fan Tokens</div>
     </div>
-    <div class="industry-card scale-in" style="transition-delay:0.24s">
-      <span class="industry-emoji">📱</span>
-      <div class="industry-name">Martech<br>& SaaS</div>
+    <div class="industry-item scale-in" style="transition-delay:0.24s">
+      <span class="industry-item-number">04</span>
+      <div class="industry-item-name">Martech<br>& SaaS</div>
+      <div class="industry-item-sub">Platforms · Tools</div>
     </div>
   </div>
 </div>
@@ -898,6 +969,7 @@ footer a:hover { color:#fff; }
       <div class="tags">
         <span class="tag featured">Braze</span>
         <span class="tag featured">Optimove</span>
+        <span class="tag featured">Salesforce</span>
         <span class="tag">In-House Platforms</span>
       </div>
     </div>
@@ -1021,13 +1093,6 @@ footer a:hover { color:#fff; }
     <div class="fade-left">
       <p class="contact-intro">Open to consulting projects, CRM audits, platform implementations and strategic advisory. Whether you are building from scratch or looking to improve what you already have — drop me a message and let's talk.</p>
       <div class="contact-links">
-        <a href="/cdn-cgi/l/email-protection#fb96889e97969a95999a979892bb9c969a9297d5989496" class="contact-link">
-          <div class="contact-link-icon">✉️</div>
-          <div>
-            <div class="contact-link-label">Email</div>
-            <div class="contact-link-value"><span class="__cf_email__" data-cfemail="701d03151c1d111e12111c131930171d11191c5e131f1d">[email&#160;protected]</span></div>
-          </div>
-        </a>
         <a href="https://www.linkedin.com/in/m-selman-balci-59b7048b/" target="_blank" class="contact-link">
           <div class="contact-link-icon">💼</div>
           <div>
